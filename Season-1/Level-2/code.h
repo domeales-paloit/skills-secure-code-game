@@ -61,7 +61,8 @@ int create_user_account(bool isAdmin, const char *username) {
     }
     ua->isAdmin = isAdmin;
     ua->userid = userid_next++;
-    strcpy(ua->username, username);
+    strncpy(ua->username, username, MAX_USERNAME_LEN+1);
+    ua->username[MAX_USERNAME_LEN] = 0;
     memset(&ua->setting, 0, sizeof ua->setting);
     accounts[userid_next] = ua;
     return userid_next++;
@@ -80,7 +81,7 @@ bool update_setting(int user_id, const char *index, const char *value) {
         return false;
 
     v = strtol(value, &endptr, 10);
-    if (*endptr || i >= SETTINGS_COUNT)
+    if (*endptr || i >= SETTINGS_COUNT || i < 0)
         return false;
     accounts[user_id]->setting[i] = v;
     return true;
